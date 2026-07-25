@@ -2,12 +2,13 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const { parseTransaction } = require('./parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.DATA_DIR || path.join(os.tmpdir(), 'personal-accounting-data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const TRANSACTIONS_FILE = path.join(DATA_DIR, 'transactions.json');
 const BUDGET_FILE = path.join(DATA_DIR, 'budget.json');
