@@ -28,11 +28,19 @@
             <input type="password" id="loginPassword" placeholder="密码" required />
             <button type="submit">登录</button>
           </form>
-          <form id="registerForm" class="auth-form">
+          <p class="helper-text">没有账户？<button type="button" id="switchToRegisterBtn" class="text-btn">点击注册</button></p>
+          <form id="registerForm" class="auth-form hidden">
             <input type="text" id="registerUsername" placeholder="用户名" required />
             <input type="password" id="registerPassword" placeholder="密码" required />
             <button type="submit">注册</button>
           </form>
+        </section>
+
+        <section id="welcomePanel" class="panel card welcome-panel hidden">
+          <div class="welcome-eyebrow">今日目标</div>
+          <h2 id="welcomeTitle">你好，XX</h2>
+          <p class="panel-subtitle">为了暴富，开始今天的记账吧！</p>
+          <button id="enterDashboardBtn" class="primary-btn">开始暴富</button>
         </section>
 
         <section id="dashboard" class="hidden">

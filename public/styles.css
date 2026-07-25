@@ -119,6 +119,49 @@ body {
   font-size: 14px;
 }
 
+.helper-text {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  padding: 0;
+  box-shadow: none;
+  font-size: 13px;
+}
+
+.welcome-panel {
+  max-width: 520px;
+  margin: 56px auto;
+  text-align: center;
+  padding: 40px 28px;
+}
+
+.welcome-eyebrow {
+  color: var(--primary);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.welcome-panel h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  color: var(--text);
+}
+
+.primary-btn {
+  margin-top: 12px;
+  padding: 12px 20px;
+}
+
 .auth-form, .transaction-form, .budget-form {
   display: flex;
   flex-direction: column;

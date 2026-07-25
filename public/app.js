@@ -1,9 +1,13 @@
 const authPanel = document.getElementById('authPanel');
+const welcomePanel = document.getElementById('welcomePanel');
 const dashboard = document.getElementById('dashboard');
 const authArea = document.getElementById('authArea');
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
+const switchToRegisterBtn = document.getElementById('switchToRegisterBtn');
+const enterDashboardBtn = document.getElementById('enterDashboardBtn');
+const welcomeTitle = document.getElementById('welcomeTitle');
 const transactionForm = document.getElementById('transactionForm');
 const budgetInput = document.getElementById('budgetInput');
 const saveBudgetBtn = document.getElementById('saveBudgetBtn');
@@ -61,12 +65,23 @@ async function checkAuth() {
 
 function showAuth() {
   authPanel.classList.remove('hidden');
+  welcomePanel.classList.add('hidden');
   dashboard.classList.add('hidden');
+  authArea.innerHTML = '';
+  registerForm.classList.add('hidden');
+}
+
+function showWelcome(user) {
+  authPanel.classList.add('hidden');
+  welcomePanel.classList.remove('hidden');
+  dashboard.classList.add('hidden');
+  welcomeTitle.textContent = `你好，${user.username}`;
   authArea.innerHTML = '';
 }
 
 function showDashboard(user) {
   authPanel.classList.add('hidden');
+  welcomePanel.classList.add('hidden');
   dashboard.classList.remove('hidden');
   authArea.innerHTML = `<span>欢迎，${user.username}</span><button id="logoutBtn">退出</button>`;
   document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -83,7 +98,7 @@ async function handleLogin(event) {
       method: 'POST',
       body: JSON.stringify({ username, password })
     });
-    showDashboard(result.user);
+    showWelcome(result.user);
   } catch (error) {
     alert(error.message);
   }
@@ -98,7 +113,7 @@ async function handleRegister(event) {
       method: 'POST',
       body: JSON.stringify({ username, password })
     });
-    showDashboard(result.user);
+    showWelcome(result.user);
   } catch (error) {
     alert(error.message);
   }
@@ -384,6 +399,14 @@ editModal.addEventListener('click', (event) => {
 
 loginForm.addEventListener('submit', handleLogin);
 registerForm.addEventListener('submit', handleRegister);
+switchToRegisterBtn.addEventListener('click', () => {
+  registerForm.classList.remove('hidden');
+  switchToRegisterBtn.parentElement.classList.add('hidden');
+});
+enterDashboardBtn.addEventListener('click', () => {
+  const user = { username: welcomeTitle.textContent.replace('你好，', '') };
+  showDashboard(user);
+});
 transactionForm.addEventListener('submit', handleTransactionSubmit);
 
 checkAuth();
