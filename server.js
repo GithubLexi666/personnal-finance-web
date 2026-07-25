@@ -59,16 +59,14 @@ function getMonthKey(date = new Date()) {
   return `${year}-${month}`;
 }
 
-function ensureGuestUser(req) {
-  if (!req.session.userId) {
-    req.session.userId = `guest_${req.sessionID}`;
-    req.session.username = '访客';
-  }
-  return { id: req.session.userId, username: req.session.username };
+function getCurrentUser(req) {
+  return req.session.userId ? { id: req.session.userId, username: req.session.username } : null;
 }
 
 function requireAuth(req, res, next) {
-  ensureGuestUser(req);
+  if (!req.session.userId) {
+    return res.status(401).json({ error: '请先登录' });
+  }
   next();
 }
 
@@ -109,8 +107,7 @@ function saveBudgetForUser(userId, monthKey, budgetAmount) {
 ensureDataFiles();
 
 app.get('/api/me', requireAuth, (req, res) => {
-  const user = ensureGuestUser(req);
-  res.json({ user });
+  res.json({ user: getCurrentUser(req) });
 });
 
 app.post('/api/register', async (req, res) => {

@@ -55,20 +55,21 @@ async function checkAuth() {
     const result = await api('/api/me');
     showDashboard(result.user);
   } catch (error) {
-    showDashboard({ username: '访客' });
+    showAuth();
   }
 }
 
 function showAuth() {
-  authPanel.classList.add('hidden');
-  dashboard.classList.remove('hidden');
-  authArea.innerHTML = '<span>匿名使用</span>';
+  authPanel.classList.remove('hidden');
+  dashboard.classList.add('hidden');
+  authArea.innerHTML = '';
 }
 
 function showDashboard(user) {
   authPanel.classList.add('hidden');
   dashboard.classList.remove('hidden');
-  authArea.innerHTML = `<span>欢迎，${user.username}</span>`;
+  authArea.innerHTML = `<span>欢迎，${user.username}</span><button id="logoutBtn">退出</button>`;
+  document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   loadSummary();
   loadTransactions();
 }
@@ -108,7 +109,7 @@ async function handleLogout() {
     await api('/api/logout', { method: 'POST' });
     showAuth();
   } catch (error) {
-    showAuth();
+    alert(error.message);
   }
 }
 
