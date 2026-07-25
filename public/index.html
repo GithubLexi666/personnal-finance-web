@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>记账本</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-group">
+          <div class="brand-mark">✦</div>
+          <div>
+            <p class="brand-eyebrow">Personal Finance</p>
+            <h1>记账本</h1>
+          </div>
+        </div>
+        <div id="authArea" class="auth-area"></div>
+      </header>
+
+      <main id="app" class="app-content">
+        <section class="panel card auth-panel" id="authPanel">
+          <div class="panel-title">欢迎使用记账本</div>
+          <p class="panel-subtitle">轻松记录每一笔支出与收入，让财务变得清晰而平静。</p>
+          <form id="loginForm" class="auth-form">
+            <input type="text" id="loginUsername" placeholder="用户名" required />
+            <input type="password" id="loginPassword" placeholder="密码" required />
+            <button type="submit">登录</button>
+          </form>
+          <form id="registerForm" class="auth-form">
+            <input type="text" id="registerUsername" placeholder="用户名" required />
+            <input type="password" id="registerPassword" placeholder="密码" required />
+            <button type="submit">注册</button>
+          </form>
+        </section>
+
+        <section id="dashboard" class="hidden">
+          <section class="input-card card">
+            <div class="panel-title">快速记账</div>
+            <form id="transactionForm" class="transaction-form">
+              <input type="text" id="transactionText" placeholder="例如：苹果 20 或 工资 8000" required />
+              <div id="autoPreview" class="preview-card">
+                <div class="preview-row"><span>自动金额</span><strong id="previewAmount">-</strong></div>
+                <div class="preview-row"><span>自动类型</span><strong id="previewType">-</strong></div>
+                <div class="preview-row"><span>自动分类</span><strong id="previewCategory">-</strong></div>
+              </div>
+              <div class="form-row">
+                <input type="number" id="manualAmount" step="0.01" min="0" placeholder="金额（可修改）" required />
+                <select id="transactionType">
+                  <option value="">自动识别</option>
+                  <option value="expense">支出</option>
+                  <option value="income">收入</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <select id="transactionCategory">
+                  <option value="">自动分类</option>
+                  <option value="餐饮">餐饮</option>
+                  <option value="交通">交通</option>
+                  <option value="水果">水果</option>
+                  <option value="住房">住房</option>
+                  <option value="购物">购物</option>
+                  <option value="娱乐">娱乐</option>
+                  <option value="通讯">通讯</option>
+                  <option value="学习">学习</option>
+                  <option value="医疗">医疗</option>
+                  <option value="工资">工资</option>
+                  <option value="其他">其他</option>
+                </select>
+                <input type="text" id="customCategory" placeholder="自定义分类（可选）" />
+              </div>
+              <button type="submit">确认记账</button>
+            </form>
+            <p id="parserHint" class="hint">输入后会显示自动识别结果，确认无误后再保存。</p>
+          </section>
+
+          <section class="stats-grid">
+            <article class="card metric-card">
+              <div class="metric-label">本月支出</div>
+              <div id="expenseValue" class="metric-value">0.00</div>
+            </article>
+            <article class="card metric-card">
+              <div class="metric-label">本月收入</div>
+              <div id="incomeValue" class="metric-value">0.00</div>
+            </article>
+            <article class="card metric-card">
+              <div class="metric-label">本月结余</div>
+              <div id="balanceValue" class="metric-value">0.00</div>
+            </article>
+          </section>
+
+          <section class="content-grid">
+            <article class="card">
+              <div class="panel-title">支出分类</div>
+              <div class="chart-layout">
+                <svg id="expenseChart" class="expense-chart" viewBox="0 0 100 100"></svg>
+                <ul id="categoryList" class="category-list"></ul>
+              </div>
+            </article>
+            <article class="card">
+              <div class="panel-title">预算</div>
+              <div class="budget-form">
+                <input type="number" id="budgetInput" placeholder="请输入月预算" />
+                <button id="saveBudgetBtn">保存预算</button>
+              </div>
+              <div class="budget-progress">
+                <div class="budget-progress-track">
+                  <div id="budgetProgressFill" class="budget-progress-fill"></div>
+                </div>
+                <div class="budget-progress-meta">
+                  <span id="budgetStatusText">尚未设置预算</span>
+                  <span id="budgetProgressPercent">0%</span>
+                </div>
+              </div>
+              <div class="budget-summary">
+                <div>预算：<span id="budgetValue">0.00</span></div>
+                <div>已支出：<span id="spentValue">0.00</span></div>
+                <div>剩余：<span id="remainingValue">0.00</span></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="card">
+            <div class="panel-title">最近明细</div>
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th>类型</th>
+                  <th>分类</th>
+                  <th>金额</th>
+                  <th>备注</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsBody"></tbody>
+            </table>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="editModal" class="modal hidden">
+      <div class="modal-card card">
+        <div class="modal-header">
+          <h3>编辑记账</h3>
+          <button type="button" id="closeEditModal" class="ghost-btn">关闭</button>
+        </div>
+        <form id="editForm" class="transaction-form">
+          <input type="number" id="editAmount" step="0.01" min="0" placeholder="金额" required />
+          <div class="form-row">
+            <select id="editType">
+              <option value="expense">支出</option>
+              <option value="income">收入</option>
+            </select>
+            <select id="editCategory">
+              <option value="餐饮">餐饮</option>
+              <option value="交通">交通</option>
+              <option value="水果">水果</option>
+              <option value="住房">住房</option>
+              <option value="购物">购物</option>
+              <option value="娱乐">娱乐</option>
+              <option value="通讯">通讯</option>
+              <option value="学习">学习</option>
+              <option value="医疗">医疗</option>
+              <option value="工资">工资</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <input type="text" id="editCustomCategory" placeholder="自定义分类（可选）" />
+          <input type="text" id="editNote" placeholder="备注" />
+          <button type="submit">保存修改</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
